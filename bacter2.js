@@ -1,14 +1,36 @@
 window.addEventListener('DOMContentLoaded', (event) =>{
     
+   
+    let keysPressed = {}
+
     document.addEventListener('keydown', (event) => {
+        keysPressed[event.key] = true;
         console.log(bacteria.length)
      });
-    
-    let tutorial_canvas = document.getElementById("tutorial");
+     
+     document.addEventListener('keyup', (event) => {
+         delete keysPressed[event.key];
+      });
+
+      let tutorial_canvas = document.getElementById("tutorial");
+      let xslider = document.getElementById("x-dim");
+      let yslider = document.getElementById("y-dim");
     let tutorial_canvas_context = tutorial_canvas.getContext('2d');
 
     tutorial_canvas.style.background = "#000000"
 
+    xslider.addEventListener('input', function () {
+        tutorial_canvas.width = xslider.value;
+        for(let t = 0;t<bacteria.length;t++){
+            bacteria[t].draw()
+        }
+      }, false);
+    yslider.addEventListener('input', function () {
+        tutorial_canvas.height = yslider.value;
+        for(let t = 0;t<bacteria.length;t++){
+            bacteria[t].draw()
+        }
+      }, false);
     class Circle{
         constructor(x, y, radius, color, xmom = 0, ymom = 0){
             this.height = 0
@@ -52,6 +74,18 @@ window.addEventListener('DOMContentLoaded', (event) =>{
             if(this.yrepel+this.y+this.radius < tutorial_canvas.height && this.y+this.yrepel-this.radius > 0){
                 this.y+=this.yrepel
                 this.yrepel = 0
+            }
+            if(this.x < 0){
+                this.x = this.x+tutorial_canvas.width
+            }
+            if(this.y < 0){
+                this.y = this.y+tutorial_canvas.height
+            }
+            if(this.x > tutorial_canvas.width){
+                this.x =  (this.x-tutorial_canvas.width)
+            }
+            if(this.y > tutorial_canvas.height){
+                this.y =  (this.y-tutorial_canvas.height)
             }
         }
         repelCheck(point){
